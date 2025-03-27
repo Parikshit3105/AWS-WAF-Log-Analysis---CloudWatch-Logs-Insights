@@ -28,7 +28,6 @@ This document provides an exhaustive guide to CloudWatch Logs Insights queries f
 ```
 fields httpRequest.httpMethod, action
 | filter action in ['BLOCK', 'ALLOW', 'CAPTCHA', 'CHALLENGE']
-| filter webaclId in ['arn:aws:wafv2:ap-south-1:450445492661:regional/webacl/presco-waf-prod/ccd9c5de-3db2-4059-99d5-35852122e7d0']
 | stats count(*) as count by httpRequest.httpMethod
 | sort count desc
 | limit 100

@@ -1,10 +1,10 @@
-# WAF Log Analysis for IP 103.121.72.77
+# WAF Log Analysis for IP 103.125.22.11
 
 ## 1. Per-Minute Detailed Request Analysis
 
 ```
 fields httpRequest.country, action, @timestamp
-| filter httpRequest.clientIp = "103.121.72.77"
+| filter httpRequest.clientIp = "103.125.22.11"
 | stats count(*) as totalRequests, 
         sum(action="ALLOW") as allowCount, 
         sum(action="BLOCK") as blockCount,
@@ -18,7 +18,7 @@ fields httpRequest.country, action, @timestamp
 ```
 
 ### Query Breakdown
-- Filters for specific IP: 103.121.72.77
+- Filters for specific IP: 103.125.22.11
 - Provides per-minute breakdown
 - Captures:
   - Total Requests
@@ -33,7 +33,7 @@ fields httpRequest.country, action, @timestamp
 
 ```
 fields httpRequest.country, action
-| filter httpRequest.clientIp = "103.121.72.77"
+| filter httpRequest.clientIp = "103.125.22.11"
 | stats count(*) as totalRequests, 
         sum(action="ALLOW") as allowCount, 
         sum(action="BLOCK") as blockCount,
@@ -56,7 +56,7 @@ fields httpRequest.country, action
 
 ```
 fields httpRequest.httpMethod, action
-| filter httpRequest.clientIp = "103.121.72.77"
+| filter httpRequest.clientIp = "103.125.22.11"
 | stats count(*) as totalRequests, 
         sum(action="ALLOW") as allowCount, 
         sum(action="BLOCK") as blockCount
@@ -75,7 +75,7 @@ fields httpRequest.httpMethod, action
 
 ```
 fields action, @timestamp
-| filter httpRequest.clientIp = "103.121.72.77"
+| filter httpRequest.clientIp = "103.125.22.11"
 | stats count(*) as totalRequests, 
         sum(action="ALLOW") as allowCount, 
         sum(action="BLOCK") as blockCount,
@@ -107,7 +107,7 @@ fields action, @timestamp
 5. Implement additional monitoring or blocking if needed
 
 ## Important Contextual Information
-- IP: 103.121.72.77
+- IP: 103.125.22.11
 - Analysis Timeframe: Entire available log period
 - Log Source: AWS WAF Logs
 - Log Group: aws-waf-logs-presco-prod

@@ -252,7 +252,14 @@ fields httpRequest.clientIp, httpRequest.country, action,
 | sort totalRequests desc
 | limit 10000
 ```
+```
+fields httpRequest.clientIp, httpRequest.country, action, terminatingRuleId, terminatingRuleType, bin(60s) as minute 
+| filter httpRequest.country = "IN" and action = "BLOCK" 
+| stats count(*) as blockCount, count(*)/60 as blockRatePerMinute by httpRequest.clientIp, minute, terminatingRuleId, terminatingRuleType 
+| sort blockCount desc 
+| limit 10000
 
+```
 #### Purpose
 - Detailed analysis that includes the specific WAF rules being triggered
 - Understand which rule types and rule IDs are most frequently matched

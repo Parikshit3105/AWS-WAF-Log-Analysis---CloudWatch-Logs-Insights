@@ -69,8 +69,8 @@ fields @timestamp
 | filter action = 'BLOCK'
 | stats 
     count(*) as blockCount,
-    earliest(@timestamp) as firstBlock,
-    latest(@timestamp) as lastBlock by 
+    min(@timestamp) as firstBlock,
+    max(@timestamp) as lastBlock by 
     terminatingRuleId,
     terminatingRuleName
 | sort blockCount desc
@@ -143,7 +143,12 @@ fields @timestamp
     httpRequest.size
 | sort @timestamp desc
 ```
-
+```
+fields @timestamp, terminatingRuleId, terminatingRuleName, httpRequest.uri, httpRequest.method, httpRequest.headers, httpRequest.clientIp, httpRequest.country, action
+| filter httpRequest.uri like ".pdf" and action="BLOCK"
+| sort @timestamp desc
+| limit 10000
+```
 ### Check Size Constraint Rule Issues
 
 ```sql

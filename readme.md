@@ -236,11 +236,51 @@ fields httpRequest.country, httpRequest.clientIp, action
 - Geographic-level security analysis
 - Granular traffic pattern investigation
 
-### Per-Minute Analysis Queries
+### 9. Comprehensive Rule-Level Traffic Analysis
 
-#### Comprehensive Per-Minute Traffic Analysis
+#### Query
+```
+fields httpRequest.clientIp, httpRequest.country, action, 
+       terminatingRuleId, terminatingRuleType, 
+       bin(60s) as minute
+| stats count(*) as totalRequests, 
+        sum(action="ALLOW") as allowCount, 
+        sum(action="BLOCK") as blockCount, 
+        count(*)/60 as requestsPerMinute
+  by httpRequest.clientIp, httpRequest.country, minute, 
+     terminatingRuleId, terminatingRuleType
+| sort totalRequests desc
+| limit 10000
+```
 
-##### Query
+#### Purpose
+- Detailed analysis that includes the specific WAF rules being triggered
+- Understand which rule types and rule IDs are most frequently matched
+- Correlate client IPs and countries with specific rule matches
+- Analyze traffic patterns with minute-level granularity
+
+#### Expected Output
+- `httpRequest.clientIp`: Client IP address
+- `httpRequest.country`: Country of origin
+- `minute`: Specific 60-second time bucket
+- `terminatingRuleId`: The specific WAF rule that terminated the request evaluation
+- `terminatingRuleType`: The type of rule that was triggered (e.g., rate-based, managed rule group)
+- `totalRequests`: Total requests matching these criteria
+- `allowCount`: Allowed requests
+- `blockCount`: Blocked requests
+- `requestsPerMinute`: Normalized request rate
+
+#### Use Cases
+- Rule effectiveness evaluation
+- Detailed security forensics
+- Identifying which rules are triggering for specific IPs or countries
+- Fine-tuning WAF rule configurations
+- Root cause analysis of blocked/allowed traffic
+- Advanced threat hunting and investigation
+
+### 10. Comprehensive Per-Minute Traffic Analysis
+
+#### Query
 ```
 fields httpRequest.country, httpRequest.clientIp, action, bin(60s) as minute
 | stats count(*) as totalRequests, 
@@ -252,12 +292,12 @@ fields httpRequest.country, httpRequest.clientIp, action, bin(60s) as minute
 | limit 100
 ```
 
-##### Purpose
+#### Purpose
 - Analyze traffic patterns with minute-level granularity
 - Understand request rates and actions over short time intervals
 - Detect potential burst attacks or unusual traffic patterns
 
-##### Expected Output
+#### Expected Output
 - `httpRequest.country`: Country of origin
 - `httpRequest.clientIp`: Specific client IP
 - `minute`: Specific 60-second time bucket
@@ -266,7 +306,7 @@ fields httpRequest.country, httpRequest.clientIp, action, bin(60s) as minute
 - `blockCount`: Blocked requests
 - `requestsPerMinute`: Normalized request rate
 
-##### Use Cases
+#### Use Cases
 - Real-time traffic monitoring
 - Detecting sudden traffic spikes
 - Identifying potential DDoS attempts
@@ -317,4 +357,3 @@ fields httpRequest.country, httpRequest.clientIp, action, bin(60s) as minute
 
 ## Conclusion
 Effective WAF log analysis is an ongoing process of monitoring, learning, and adapting to emerging security challenges.
-
